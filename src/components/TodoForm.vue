@@ -1,18 +1,18 @@
 <template>
     <input type="text" placeholder="What needs to be done?" @keyup.enter="addTask" v-model="tempTask">
-    <div class="task" v-for="task in filteredTasks" :key="task.id" :class="{ complete: task.completed }">
+    <div class="task" v-for="task in filteredTasks" :key="task.title" :class="{ complete: task.completed }">
         <div class="actions">
             <div class="title">
-                <div v-if="!task.editing" @dblclick="startEditing(task.id)">
+                <div v-if="!task.editing" @dblclick="startEditing(task.title)">
                     <h3>{{task.title}}</h3>
                 </div>
-                <div v-if="task.editing" @keyup.enter="doneEditing(task.id)" @keyup.esc="cancelEditing(task.id)">
+                <div v-if="task.editing" @keyup.enter="doneEditing(task.title)" @keyup.esc="cancelEditing(task.title)">
                     <input type="text" v-model="task.tempEdit">
                 </div>
             </div>
             <div class="icons">
-                <span @click="toggleComplete(task.id)" class="material-icons tick">done</span>
-                <span @click="deleteTask(task.id)" class="material-icons">delete</span>
+                <span @click="toggleComplete(task.title)" class="material-icons tick">done</span>
+                <span @click="deleteTask(task.title)" class="material-icons">delete</span>
             </div>
         </div>
     </div>
@@ -49,31 +49,35 @@ export default {
         }
     },
     methods: {
-        addTask(e) {
+        addTask() {
             let newTask = {
                 title: this.tempTask,
                 completed: false,
                 editing: false,
                 tempEdit: null,
-                id: this.tasks.length
             }
             this.tasks.push(newTask)
             this.tempTask = ''
         },
-        startEditing(id){
-            this.tasks[id].editing = true
-            this.tasks[id].tempEdit = this.tasks[id].title
+        startEditing(title){
+            let task = this.tasks.find(item => item.title === title)
+            task.editing = true
+            task.tempEdit = task.title
         },
-        doneEditing(id){
-            this.tasks[id].editing = false
-            this.tasks[id].title = this.tasks[id].tempEdit
-            this.tasks[id].tempEdit = null
+        doneEditing(title){
+            let task = this.tasks.find(item => item.title === title)
+            task.editing = false
+            task.title = task.tempEdit
+            task.tempEdit = null
         },
-        toggleComplete(id){
-            this.tasks[id].completed = !this.tasks[id].completed
+        toggleComplete(title){
+            let task = this.tasks.find(item => item.title === title)
+            task.completed = !task.completed
         },
-        deleteTask(id){
-            this.tasks.splice(id, 1)
+        deleteTask(title){
+            let task = this.tasks.find(item => item.title === title)
+            let index = this.tasks.indexOf(task)
+            this.tasks.splice(index, 1)
         },
         toggleCompleteAll(){
             if(this.allComplete){

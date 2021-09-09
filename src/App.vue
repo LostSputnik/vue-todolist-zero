@@ -28,7 +28,7 @@ export default {
   margin-top: 60px;
 }
 .body {
-  max-width: 480px;
+  max-width: 560px;
   margin: 20px auto;
 }
 </style>
